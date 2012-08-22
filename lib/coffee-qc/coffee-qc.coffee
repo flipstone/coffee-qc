@@ -1,4 +1,5 @@
 walkdir = require 'walkdir'
+fs = require 'fs'
 
 class Property
   constructor: (@name, @argSpec, @f) ->
@@ -57,7 +58,11 @@ loadProps = (filepath) ->
 
   try
     files = walkdir.sync filepath
-    require f.replace(".coffee","") for f in files
+    for f in files
+      stats = fs.statSync f
+      if stats?.isFile()
+        require f.replace(".coffee","")
+
   catch error
     require filepath
 

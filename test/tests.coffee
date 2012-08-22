@@ -117,6 +117,13 @@ assertOutput 'passing-dir', """
 
                             """
 
+assertOutput 'nested-dir', """
+                           x is x: passed 100 trials
+                           y is y: passed 100 trials
+
+                           0 Failures / 2 Properties
+
+                           """
 assertFail 'failing-prop'
 assertOutput 'failing-props', """
                               a \\+ b == b \\+ a: passed 100 trials
