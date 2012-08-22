@@ -1,0 +1,7 @@
+{ "name": "coffee-qc"
+, "version": "0.0.1"
+, "main": "./lib/coffee-qc/coffee-qc.coffee"
+, "scripts": { "test": "coffee test/tests.coffee" }
+, "dependencies": { "coffee-script": "1.3.3"
+                  , "walkdir": "0.0.4" }
+}
