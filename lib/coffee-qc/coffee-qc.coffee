@@ -18,7 +18,6 @@ class Property
         options.console "#{@name}: failed after #{n} trials"
         return {passed: false}
 
-    options.console "#{@name}: passed 100 trials"
     passed: true
 
 
@@ -77,7 +76,9 @@ exports.run = (options) ->
   results = (p.check(options) for p in props)
   failures = (r for r in results when !r.passed)
 
-  options.console ""
+  if failures.length > 0
+    options.console ""
+
   options.console "#{failures.length} Failures / #{props.length} Properties"
 
   passed: didAll results, 'passed'

@@ -91,18 +91,12 @@ assertPass 'passing-prop'
 
 assertPass 'passing-props'
 assertOutput 'passing-props', """
-                              a \\+ b == b \\+ a: passed 100 trials
-                              a \\* b == b \\* a: passed 100 trials
-
                               0 Failures / 2 Properties
 
                               """
 
 assertPass 'passing-group'
 assertOutput 'passing-group', """
-                              Group - ints are even or odd: passed 100 trials
-                              Group - x\\*1 == x: passed 100 trials
-
                               0 Failures / 2 Properties
 
                               """
@@ -110,25 +104,17 @@ assertOutput 'passing-group', """
 assertPass 'nested-group'
 assertPass 'passing-dir'
 assertOutput 'passing-dir', """
-                            x is x: passed 100 trials
-                            y is y: passed 100 trials
-
                             0 Failures / 2 Properties
 
                             """
 
 assertOutput 'nested-dir', """
-                           x is x: passed 100 trials
-                           y is y: passed 100 trials
-
                            0 Failures / 2 Properties
 
                            """
 assertFail 'failing-prop'
 assertOutput 'failing-props', """
-                              a \\+ b == b \\+ a: passed 100 trials
                               a / b == b / a: failed after \\d+ trials
-                              a \\* b == b \\* a: passed 100 trials
 
                               1 Failures / 3 Properties
 
