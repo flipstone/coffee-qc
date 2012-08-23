@@ -30,16 +30,34 @@ class Property
 
 
 GLOBAL.arb =
-  int: -> Math.round(Math.random() * 1000) - 500
+  sized: (size, generator) -> -> generator(size)
+
+  int: (size = 1000) -> Math.round(Math.random() * size * 2) - size
+  positive: (size = 1000) -> Math.round(Math.random() * size)
   char: ->
     # 20..255 = printable char
     int = Math.round(Math.random() * 235) + 20
     String.fromCharCode int
 
-  string: ->
-    length = Math.round(Math.random() * 100)
-    chars = (arb.char() for i in [1..length])
-    chars.join ''
+  string: -> arb.arrayOf(arb.char)().join ''
+
+  object: (example) ->
+    (size) ->
+      obj = {}
+      obj[k] = v(size) for k,v of example
+      obj
+
+  arrayOf: (generator) ->
+    (size = 100) ->
+      length = Math.round(Math.random() * size)
+      for i in [0...length]
+        generator(Math.floor(size / 2))
+
+Function.prototype.arbitrarily = (generators...) ->
+  f = this
+  (size) ->
+    args = (g(size) for g in generators)
+    f args...
 
 GLOBAL.prop = (name, argSpec, f) ->
   __props.push new Property name, argSpec, f
