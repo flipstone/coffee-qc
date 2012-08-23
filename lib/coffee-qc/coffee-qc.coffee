@@ -14,8 +14,16 @@ class Property
 
   check: (options) ->
     for n in [1..100]
-      if !@f.apply(@arbitraryContext())
+      ctx = @arbitraryContext()
+      if !@f.apply ctx
         options.console "#{@name}: failed after #{n} trials"
+        options.console "  Falsified by:"
+
+        for k,v of ctx
+          options.console "    #{k}: #{v}"
+
+        options.console ""
+
         return {passed: false}
 
     passed: true
@@ -75,9 +83,6 @@ exports.run = (options) ->
 
   results = (p.check(options) for p in props)
   failures = (r for r in results when !r.passed)
-
-  if failures.length > 0
-    options.console ""
 
   options.console "#{failures.length} Failures / #{props.length} Properties"
 

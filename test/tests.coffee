@@ -115,6 +115,9 @@ assertOutput 'nested-dir', """
 assertFail 'failing-prop'
 assertOutput 'failing-props', """
                               a / b == b / a: failed after \\d+ trials
+                                Falsified by:
+                                  a: -?\\d+
+                                  b: -?\\d+
 
                               1 Failures / 3 Properties
 
