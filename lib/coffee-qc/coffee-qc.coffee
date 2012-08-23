@@ -1,6 +1,25 @@
 walkdir = require 'walkdir'
 fs = require 'fs'
 
+isObject = (obj) -> typeof(obj) == 'object' && !(obj instanceof Array)
+
+inspectForFalsification = (obj, options = {}) ->
+  indent = options.indent || 0
+  indentString = (' ' for i in [0...indent]).join ''
+
+  if isObject obj
+    lines = for k,v of obj
+      if isObject v
+        nestedInspect = inspectForFalsification v, indent: indent + 2
+        indentString + "#{k}:\n#{nestedInspect}"
+      else
+        indentString + "#{k}: #{v}"
+
+    lines.join "\n"
+  else
+    indentString + obj.toString()
+
+
 class Property
   constructor: (@name, @argSpec, @f) ->
 
@@ -19,9 +38,7 @@ class Property
         options.console "#{@name}: failed after #{n} trials"
         options.console "  Falsified by:"
 
-        for k,v of ctx
-          options.console "    #{k}: #{v}"
-
+        options.console inspectForFalsification(ctx, indent: 4)
         options.console ""
 
         return {passed: false}

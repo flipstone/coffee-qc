@@ -125,5 +125,16 @@ assertOutput 'failing-props', """
 
 
 assertFail 'failing-group'
+assertOutput 'failing-object', """
+                               bad object: failed after \\d+ trials
+                                 Falsified by:
+                                   a:
+                                     x: -?\\d+
+                                     y: -?\\d+
+
+                               1 Failures / 1 Properties
+
+                               """
+
 assertPass 'arbitrary-generators'
 
