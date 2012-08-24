@@ -23,17 +23,17 @@ inspectForFalsification = (obj, options = {}) ->
 class Property
   constructor: (@name, @argSpec, @f) ->
 
-  arbitraryContext: ->
+  arbitraryContext: (size) ->
     ctx = {}
 
     for k,v of @argSpec
-      ctx[k] = v()
+      ctx[k] = v(size)
 
     ctx
 
   check: (options) ->
-    for n in [1..100]
-      ctx = @arbitraryContext()
+    for n in [0..99]
+      ctx = @arbitraryContext(n)
       if !@f.apply ctx
         options.console "#{@name}: failed after #{n} trials"
         options.console "  Falsified by:"
