@@ -94,3 +94,21 @@ prop.group "arbitrarily called function", ->
        x: arb.sized(10, arbF),
        -> Math.abs(@x) <= 20
 
+prop.group "arbitrarily instantiated object", ->
+  class F
+    constructor: (@x, @y) ->
+
+  arbF = F.instanceArbitrarily arb.int, arb.int
+
+  prop 'is instance of class',
+       o: arbF,
+       -> @o instanceof F
+
+  prop 'calls function with values from given generators',
+       o: arbF,
+       -> isInt(@o.x) && isInt(@o.y)
+
+  prop 'can be sized',
+       o: arb.sized(10, arbF),
+       -> Math.abs(@o.x) <= 10
+

@@ -76,6 +76,12 @@ Function.prototype.arbitrarily = (generators...) ->
     args = (g(size) for g in generators)
     f args...
 
+Function.prototype.instanceArbitrarily = (generators...) ->
+  f = this
+  (size) ->
+    args = (g(size) for g in generators)
+    new f args...
+
 GLOBAL.prop = (name, argSpec, f) ->
   __props.push new Property name, argSpec, f
 
