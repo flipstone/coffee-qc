@@ -45,30 +45,45 @@ class Property
 
     passed: true
 
+class LoadError
+  constructor: (@name, @error) ->
+  check: (options) ->
+    options.console "#{@name} failed to load:"
+    options.console "  #{@error}"
+    options.console ""
+    passed: false
 
-GLOBAL.arb =
-  sized: (size, generator) -> -> generator(size)
+GLOBAL.arb = {}
+arb.sized = (size, generator) -> -> generator(size)
+arb.int = (size = 1000) -> Math.round(Math.random() * size * 2) - size
+arb.positive = (size = 1000) -> Math.round(Math.random() * size)
 
-  int: (size = 1000) -> Math.round(Math.random() * size * 2) - size
-  positive: (size = 1000) -> Math.round(Math.random() * size)
-  char: ->
-    # 20..255 = printable char
-    int = Math.round(Math.random() * 235) + 20
-    String.fromCharCode int
+arb.charInRange = (min, max) ->
+  int = Math.round(Math.random() * (max - min)) + min
+  String.fromCharCode int
 
-  string: -> arb.arrayOf(arb.char)().join ''
+arb.char = -> arb.charInRange 32, 126
+arb.alphaCharUpper = -> arb.charInRange 65, 90
+arb.alphaCharLower =  -> arb.charInRange 97, 122
+arb.alphaChar = -> if arb.boolean() then arb.alphaCharUpper() else arb.alphaCharLower()
 
-  object: (example) ->
-    (size) ->
-      obj = {}
-      obj[k] = v(size) for k,v of example
-      obj
+arb.stringOf = (generator) -> (size) -> arb.arrayOf(generator)(size).join('')
+arb.string = arb.stringOf arb.char
+arb.alpha = arb.stringOf arb.alphaChar
 
-  arrayOf: (generator) ->
-    (size = 100) ->
-      length = Math.round(Math.random() * size)
-      for i in [0...length]
-        generator(Math.floor(size / 2))
+arb.object = (example) ->
+  (size) ->
+    obj = {}
+    obj[k] = v(size) for k,v of example
+    obj
+
+arb.arrayOf = (generator) ->
+  (size = 100) ->
+    length = Math.round(Math.random() * size)
+    for i in [0...length]
+      generator(Math.floor(size / 2))
+
+arb.boolean = () -> Math.random() > 0.5
 
 Function.prototype.arbitrarily = (generators...) ->
   f = this
@@ -101,18 +116,31 @@ GLOBAL.prop.group = (groupName, f) ->
 
 __props = []
 
+loadFile = (filepath) ->
+  try
+    require filepath.replace(".coffee","")
+  catch error
+    __props.push new LoadError(filepath, error)
+
+loadDirectory = (path) ->
+  files = walkdir.sync path
+  for f in files
+    stats = fs.statSync f
+    if stats.isFile()
+      loadFile f
+
+loadFileOrDir = (path) ->
+  stats = fs.statSync path
+
+  if stats.isFile()
+    loadFile path
+  else
+    loadDirectory path
+
 loadProps = (filepath) ->
   __props = []
 
-  try
-    files = walkdir.sync filepath
-    for f in files
-      stats = fs.statSync f
-      if stats?.isFile()
-        require f.replace(".coffee","")
-
-  catch error
-    require filepath
+  loadFileOrDir filepath
 
   props = __props
   __props = []

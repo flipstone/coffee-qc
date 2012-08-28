@@ -26,13 +26,57 @@ prop.group 'arb.positive', ->
          x = arb.sized(@size, arb.positive)()
          Math.abs(x) <= @size
 
-prop 'arb.char is string',
-     c: arb.char,
-     -> typeof(@c) == "string"
+prop.group 'arb.char', ->
+  prop 'is string',
+       c: arb.char,
+       -> typeof(@c) == "string"
 
-prop 'arb.char is printable',
-     c: arb.char,
-     -> @c.charCodeAt(0) >= 20
+  prop 'is length 1',
+       c: arb.char,
+       -> @c.length == 1
+
+  prop 'is printable',
+       c: arb.char,
+       -> @c.charCodeAt(0) > 31 && @c.charCodeAt(0) < 127
+
+prop.group 'arb.alphaCharUpper', ->
+  prop 'is string',
+       c: arb.alphaCharUpper,
+       -> typeof(@c) == "string"
+
+  prop 'is length 1',
+       c: arb.alphaCharUpper,
+       -> @c.length == 1
+
+  prop 'is upper alpha',
+       c: arb.alphaCharUpper,
+       -> /[A-Z]/.test @c
+
+prop.group 'arb.alphaCharLower', ->
+  prop 'is string',
+       c: arb.alphaCharLower,
+       -> typeof(@c) == "string"
+
+  prop 'is length 1',
+       c: arb.alphaCharLower,
+       -> @c.length == 1
+
+  prop 'is lower alpha',
+       c: arb.alphaCharLower,
+       -> /[a-z]/.test @c
+
+prop.group 'arb.alphaChar', ->
+  prop 'is string',
+       c: arb.alphaChar,
+       -> typeof(@c) == "string"
+
+  prop 'is length 1',
+       c: arb.alphaChar,
+       -> @c.length == 1
+
+  prop 'is alpha',
+       c: arb.alphaChar,
+       -> /[A-Za-z]/.test @c
 
 prop 'arb.string is string',
      s: arb.string,
@@ -111,4 +155,9 @@ prop.group "arbitrarily instantiated object", ->
   prop 'can be sized',
        o: arb.sized(10, arbF),
        -> Math.abs(@o.x) <= 10
+
+prop.group "arbitrary boolean", ->
+  prop 'is true or false',
+       bool: arb.boolean
+       -> @bool is true || @bool is false
 

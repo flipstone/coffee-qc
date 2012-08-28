@@ -87,21 +87,21 @@ assertOutput = (file, expected) ->
     process.exit 2
 
 
-assertPass 'passing-prop'
+assertPass 'passing-prop.coffee'
 
-assertPass 'passing-props'
-assertOutput 'passing-props', """
-                              0 Failures / 2 Properties
+assertPass 'passing-props.coffee'
+assertOutput 'passing-props.coffee', """
+                                     0 Failures / 2 Properties
 
-                              """
+                                     """
 
-assertPass 'passing-group'
-assertOutput 'passing-group', """
-                              0 Failures / 2 Properties
+assertPass 'passing-group.coffee'
+assertOutput 'passing-group.coffee', """
+                                     0 Failures / 2 Properties
 
-                              """
+                                     """
 
-assertPass 'nested-group'
+assertPass 'nested-group.coffee'
 assertPass 'passing-dir'
 assertOutput 'passing-dir', """
                             0 Failures / 2 Properties
@@ -112,29 +112,49 @@ assertOutput 'nested-dir', """
                            0 Failures / 2 Properties
 
                            """
-assertFail 'failing-prop'
-assertOutput 'failing-props', """
-                              a / b == b / a: failed after \\d+ trials
-                                Falsified by:
-                                  a: -?\\d+
-                                  b: -?\\d+
 
-                              1 Failures / 3 Properties
+assertFail 'failing-prop.coffee'
+assertOutput 'failing-props.coffee', """
+                                     a / b == b / a: failed after \\d+ trials
+                                       Falsified by:
+                                         a: -?\\d+
+                                         b: -?\\d+
 
-                              """
+                                     1 Failures / 3 Properties
+
+                                     """
 
 
-assertFail 'failing-group'
-assertOutput 'failing-object', """
-                               bad object: failed after \\d+ trials
-                                 Falsified by:
-                                   a:
-                                     x: -?\\d+
-                                     y: -?\\d+
+assertFail 'failing-group.coffee'
+assertOutput 'failing-object.coffee', """
+                                      bad object: failed after \\d+ trials
+                                        Falsified by:
+                                          a:
+                                            x: -?\\d+
+                                            y: -?\\d+
 
-                               1 Failures / 1 Properties
+                                      1 Failures / 1 Properties
 
-                               """
+                                      """
 
-assertPass 'arbitrary-generators'
+assertPass 'arbitrary-generators.coffee'
+
+assertFail 'syntax-error.coffee'
+assertOutput 'syntax-error.coffee', """
+                                    .*syntax-error.coffee failed to load:
+                                      ReferenceError: foo is not defined
+
+                                    1 Failures / 1 Properties
+
+                                    """
+
+assertFail 'nested-syntax'
+assertOutput 'nested-syntax', """
+                             .*nested-syntax/error.coffee failed to load:
+                               ReferenceError: foo is not defined
+
+                             1 Failures / 1 Properties
+
+                             """
+
 
